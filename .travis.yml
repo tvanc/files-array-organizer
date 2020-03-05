@@ -1,0 +1,10 @@
+language: php
+
+php:
+  - 7.2
+
+script:
+  - phpunit --coverage-text
+
+install:
+  - composer install
