@@ -65,7 +65,7 @@ class FilesArrayOrganizer
      *       'size'     => [
      *           0 => [
      *               'attachments' => [
-     *                   0 => 2407,
+     *                   0 => 3802,
      *               ],
      *           ],
      *       ],
@@ -98,7 +98,7 @@ class FilesArrayOrganizer
      *                    'type'     => 'image/jpeg',
      *                    'tmp_name' => '/tmp/phpKYBy4z',
      *                    'error'    => 0,
-     *                    'size'     => 2407,
+     *                    'size'     => 3802,
      *                ],
      *            ],
      *        ],
