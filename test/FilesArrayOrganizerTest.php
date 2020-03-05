@@ -9,12 +9,6 @@ use tvanc\FilesArrayOrganizer\FilesArrayOrganizer;
 
 final class FilesArrayOrganizerTest extends TestCase
 {
-    public function customCallback(array &$file)
-    {
-        $file = [10, 'file' => [...$file]];
-    }
-
-
     public function testDefaultOutput()
     {
         $input                 = $this->getInputFilesArray();
