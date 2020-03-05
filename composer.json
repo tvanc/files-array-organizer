@@ -1,0 +1,31 @@
+{
+  "name": "tvanc/files-array-organizer",
+  "description": "Creates an organized version of the $_FILES array.",
+  "type": "library",
+  "license": "mit",
+  "authors": [
+    {
+      "name": "Travis Van Couvering",
+      "email": "travis@tvanc.com"
+    }
+  ],
+  "scripts": {
+    "test": "./vendor/bin/phpunit"
+  },
+  "autoload": {
+    "psr-4": {
+      "tvanc\\FilesArrayOrganizer\\": "src/"
+    }
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "tvanc\\FilesArrayOrganizer\\Test\\": "test/"
+    }
+  },
+  "require": {
+    "php": "^7"
+  },
+  "require-dev": {
+    "phpunit/phpunit": "^9.0"
+  }
+}
