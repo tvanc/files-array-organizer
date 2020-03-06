@@ -126,7 +126,7 @@ It will actually look like this:
 
 I leave it as an exercise for the reader to figure out how to extract the useful information out of that. If you don't want to repeat that exercise every time you need to handle more than one file at a time, just use this library.
 
-To see how to use `FilesArrayOrganizer`, see the example, 
+To see how to use `FilesArrayOrganizer` with a `$_FILES` array just like this, see the example, 
 [Multiple inputs that accept multiple files](#multiple-inputs-that-accept-multiple-files).
 
 Examples
