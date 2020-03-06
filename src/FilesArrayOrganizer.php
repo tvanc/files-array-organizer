@@ -20,55 +20,55 @@ class FilesArrayOrganizer
      *
      * For reference, submitting a form with these inputs:
      * <code>&lt;input type="file" name="attachment"></code>
-     * <code>&lt;input type="file" name="line_item[0][attachments][]" multiple></code>
+     * <code>&lt;input type="file" name="todo[0][attachments][]" multiple></code>
      *
      * Would produce a <code>$_FILES</code> array like this:
      * <pre>
      * // Would produce this $_FILES array
      * [
      *    'attachment' => [
-     *        'name' => 'filename1.jpg'
+     *        'name' => 'filename1.jpg',
      *        'type' => 'image/jpeg',
-     *        'tmp_name' => '/tmp/phpR4nD0m'
-     *        'error' => 0
+     *        'tmp_name' => '/tmp/phpR4nD0m',
+     *        'error' => 0,
      *        'size' => 2407
-     *    ]
-     *    'line_item' => [
+     *    ],
+     *    'todo' => [
      *       'name'     => [
      *           0 => [
      *               'attachments' => [
-     *                   0 => 'filename2.jpg',
-     *               ],
-     *           ],
+     *                   0 => 'filename2.jpg'
+     *               ]
+     *           ]
      *       ],
      *       'type'     => [
      *           0 => [
      *               'attachments' => [
-     *                   0 => 'image/jpeg',
-     *               ],
-     *           ],
+     *                   0 => 'image/jpeg'
+     *               ]
+     *           ]
      *       ],
      *       'tmp_name' => [
      *           0 => [
      *               'attachments' => [
-     *                   0 => '/tmp/phpKYBy4z',
-     *               ],
-     *           ],
+     *                   0 => '/tmp/phpKYBy4z'
+     *               ]
+     *           ]
      *       ],
      *       'error'    => [
      *           0 => [
      *               'attachments' => [
-     *                   0 => 0,
-     *               ],
-     *           ],
+     *                   0 => 0
+     *               ]
+     *           ]
      *       ],
      *       'size'     => [
      *           0 => [
      *               'attachments' => [
      *                   0 => 3802,
-     *               ],
-     *           ],
-     *       ],
+     *               ]
+     *           ]
+     *       ]
      *    ]
      * ]
      * </pre>
@@ -80,29 +80,29 @@ class FilesArrayOrganizer
      *
      * @return array
      * The organized files array. Given a value for <code>$filesArray</code>
-     * like that described above, this method would yield:
+     * like that described above, this method would return:
      * <pre>
      * [
      *    'attachment'         => [
-     *        'name'     => 'filename.jpg',
+     *        'name'     => 'filename1.jpg',
      *        'type'     => 'image/jpeg',
      *        'tmp_name' => '/tmp/phpR4nD0m',
      *        'error'    => 0,
-     *        'size'     => 2407,
+     *        'size'     => 2407
      *    ],
-     *    'line_item' => [
+     *    'todo' => [
      *        0 => [
      *            'attachments' => [
      *                0 => [
-     *                    'name'     => 'filename.jpg',
+     *                    'name'     => 'filename2.jpg',
      *                    'type'     => 'image/jpeg',
      *                    'tmp_name' => '/tmp/phpKYBy4z',
      *                    'error'    => 0,
      *                    'size'     => 3802,
-     *                ],
-     *            ],
-     *        ],
-     *    ],
+     *                ]
+     *            ]
+     *        ]
+     *    ]
      * ]
      * </pre>
      */
@@ -115,8 +115,8 @@ class FilesArrayOrganizer
 
         /* The keys of first level of the <code>$_FILES</code> array are the
          * top-level names of the <input type="file"> fields. Given a field
-         * with the name line_item[0][attachments][], `line_item` would be one
-         * of keys in the first level of <code>$_FILES</code>.
+         * with the name todo[0][attachments][], `todo` would be one of the
+         * keys in the first level of <code>$_FILES</code>.
          */
         foreach ($filesArray as $top_level_name => $attributes) {
             $output[$top_level_name] = [];
@@ -142,19 +142,19 @@ class FilesArrayOrganizer
     /**
      * To get the name of files uploaded via these upload fields:
      * <code>&lt;input type="file" name="attachment"></code>
-     * <code>&lt;input type="file" name="line_item[0][attachments][]" multiple></code>
+     * <code>&lt;input type="file" name="todo[0][attachments][]" multiple></code>
      *
      * You would need these paths:
      * <pre>
      * $_FILES['attachment']['name'];
-     * $_FILES['line_item']['name'][0]['attachments'][0];
+     * $_FILES['todo']['name'][0]['attachments'][0];
      * </pre>
      *
      * To figure out how to change that array to a form where we can
      * get the same information this way:
      * <pre>
      *    $organizedFiles['attachment'] ['name'];
-     *    $organizedFiles['line_item'] [0]['attachments'][0] ['name'];
+     *    $organizedFiles['todo'] [0]['attachments'][0] ['name'];
      * // ^ ----  $root_element  ---- ^ --- $infix_path --- ^ $attribute_name
      * </pre>
      *
@@ -168,7 +168,7 @@ class FilesArrayOrganizer
      * @param array        $root_element
      * A root element of the file array. In the example documented above, this
      * is <code>$organizedFiles['attachment']</code> or
-     * <code>$organizedFiles['line_item']</code>.
+     * <code>$organizedFiles['todo']</code>.
      *
      * @param string       $attribute_name
      * The name of the file attribute whose value we're currently ferreting out.
