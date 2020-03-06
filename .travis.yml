@@ -2,9 +2,17 @@ language: php
 
 php:
   - 7.3
+  - 7.4
 
 script:
-  - phpunit --coverage-text
+  - composer run test -- --coverage-clover=clover.xml
 
 install:
-  - composer install
+  - travis_retry composer install --no-interaction --no-suggest
+
+after_success:
+  - bash < (curl -s https://codecov.io/bash)
+
+cache:
+  directories:
+    - $HOME/.composer/cache

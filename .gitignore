@@ -1,6 +1,13 @@
-/vendor/
+.DS_Store
+
 /.idea/
+
+# Composer
+/vendor/
+
+# Phpunit coverage for humans
 /.coverage/
 
-.DS_Store
+# Phpunit coverage for machines
+/clover.xml
 
