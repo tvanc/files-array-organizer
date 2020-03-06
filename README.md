@@ -1,6 +1,9 @@
 Files Array Organizer
 =====================
 
+[![Build status](https://travis-ci.org/tvanc/files-array-organizer.svg?branch=master)](https://travis-ci.org/tvanc/files-array-organizer.svg)
+[![codecov](https://codecov.io/gh/tvanc/files-array-organizer/branch/master/graph/badge.svg)](https://codecov.io/gh/tvanc/files-array-organizer)
+
 | [Getting Started](#getting-started) | [Explanation](#explanation) | [Examples](#examples) |
 | ----------------------------------- | --------------------------- | --------------------- |
 
@@ -123,7 +126,8 @@ It will actually look like this:
 
 I leave it as an exercise for the reader to figure out how to extract the useful information out of that. If you don't want to repeat that exercise every time you need to handle more than one file at a time, just use this library.
 
-To see this 
+To see how to use `FilesArrayOrganizer`, see the example, 
+[Multiple inputs that accept multiple files](#multiple-inputs-that-accept-multiple-files).
 
 Examples
 --------
