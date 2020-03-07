@@ -1,5 +1,4 @@
-Files Array Organizer
-=====================
+# Files Array Organizer
 
 [![Build status](https://travis-ci.org/tvanc/files-array-organizer.svg?branch=master)](https://travis-ci.org/tvanc/files-array-organizer.svg)
 [![codecov](https://codecov.io/gh/tvanc/files-array-organizer/branch/master/graph/badge.svg)](https://codecov.io/gh/tvanc/files-array-organizer)
@@ -7,23 +6,25 @@ Files Array Organizer
 | [Getting Started](#getting-started) | [Explanation](#explanation) | [Examples](#examples) |
 | ----------------------------------- | --------------------------- | --------------------- |
 
+
 Dealing with the `$_FILES` array in PHP sucks. Most solutions only work for a
 specific situation and aren't easily portable. This library is designed to organize any
 possible incarnation of the `$_FILES` array into the structure you would intuitively expect. Getting data about uploaded files should be just as easy as reading the `$_POST` array.
 
-Getting Started
----------------
+## Getting Started
 
 ### Requirements
+
 PHP >= 7.3
 
 ### Installation
+
 ```bash
 composer require tvanc/files-array-organizer
 ```
 
-Explanation
------------
+## Explanation
+
 For some situations, dealing with the `$_FILES` superglobal is fine. Uploading a single file via a field named `attachment` would generate a simple `$_FILES` array like this:
 
 ```php
@@ -46,6 +47,7 @@ $file_size = $_FILES['attachment']['size'];
 ```
 
 What about a field named `todo[0][attachments][]`, which accepts multiple files? Working with the files from this field should be easy. Right?
+
 ```php
 <?php
 $attachments = $_FILES['todo'][0]['attachments'];
@@ -62,6 +64,7 @@ foreach ($attachments as $attachment) {
 **Wrong.**
 
 You thought the `$_FILES` array would look like this.
+
 ```php
 [
     'todo' => [
@@ -82,6 +85,7 @@ You thought the `$_FILES` array would look like this.
 ```
 
 It will actually look like this:
+
 ```php
 [
     'todo' => [
@@ -126,15 +130,14 @@ It will actually look like this:
 
 I leave it as an exercise for the reader to figure out how to extract the useful information out of that. If you don't want to repeat that exercise every time you need to handle more than one file at a time, just use this library.
 
-To see how to use `FilesArrayOrganizer` with a `$_FILES` array just like this, see the example, 
+To see how to use `FilesArrayOrganizer` with a `$_FILES` array just like this, see the example,
 [Multiple inputs that accept multiple files](#multiple-inputs-that-accept-multiple-files).
 
-Examples
---------
+## Examples
 
 ### One input, one file
 
-In a case like this, the `$_FILES` array is pretty straight forward and you the organized version is going to be identical to the unorganized version.
+In a case like this, the `$_FILES` array is pretty straight forward and the organized version is identical to the unorganized version.
 
 ```php
 <?php
@@ -155,6 +158,7 @@ if ($_FILES) {
 ```
 
 ### A single input that accepts multiple files
+
 ```php
 <?php
 use tvanc\FilesArrayOrganizer\FilesArrayOrganizer;
@@ -162,7 +166,7 @@ use tvanc\FilesArrayOrganizer\FilesArrayOrganizer;
 if ($_FILES) {
     $organizedFiles = FilesArrayOrganizer::organize($_FILES);
     $attachments    = $organizedFiles['attachments'];
-    
+
     foreach ($attachments as $attachment) {
         $attachment_name = $attachment['name'];
         $attachment_size = $attachment['size'];
@@ -177,6 +181,7 @@ if ($_FILES) {
 ```
 
 ### Multiple inputs that accept multiple files
+
 ```php
 <?php
 use tvanc\FilesArrayOrganizer\FilesArrayOrganizer;
@@ -197,7 +202,7 @@ if ($_FILES) {
 <form method="post" enctype="multipart/form-data">
     <?php foreach ($todos as $index => $todo) { ?>
         <label>Attachments for todo <?= $index ?></label>
-        <input 
+        <input
             type="file"
             name="todo[<?= $index ?>][attachments][]"
             multiple
@@ -209,6 +214,7 @@ if ($_FILES) {
 ```
 
 ### Execute a custom callback on each file
+
 ```php
 <?php
 use tvanc\FilesArrayOrganizer\FilesArrayOrganizer;
