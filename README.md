@@ -3,12 +3,12 @@
 [![Build status](https://travis-ci.org/tvanc/files-array-organizer.svg?branch=master)](https://travis-ci.org/tvanc/files-array-organizer.svg)
 [![codecov](https://codecov.io/gh/tvanc/files-array-organizer/branch/master/graph/badge.svg)](https://codecov.io/gh/tvanc/files-array-organizer)
 
-| [Getting Started](#getting-started) | [Explanation](#explanation) | [Examples](#examples) |
-| ----------------------------------- | --------------------------- | --------------------- |
+| [Getting Started](#getting-started) | [Examples](#examples) | [Explanation](#explanation) |
+| ----------------------------------- | --------------------- | --------------------------- |
 
 
 Dealing with the `$_FILES` array in PHP sucks. Most solutions only work for a
-specific situation and aren't easily portable. This library is designed to organize any
+specific situation and aren't easily portable. This utility is designed to organize any
 possible incarnation of the `$_FILES` array into the structure you would intuitively expect. Getting data about uploaded files should be just as easy as reading the `$_POST` array.
 
 ## Getting Started
@@ -21,6 +21,115 @@ PHP >= 7.3
 
 ```bash
 composer require tvanc/files-array-organizer
+```
+
+## Examples
+
+### One input, one file
+
+In a case like this, the `$_FILES` array is pretty straight forward and the organized version is identical to the unorganized version.
+
+```php
+<?php
+use tvanc\FilesArrayOrganizer\FilesArrayOrganizer;
+
+if ($_FILES) {
+    $organizedFiles = FilesArrayOrganizer::organize($_FILES);
+
+    if ($organizedFiles === $_FILES) {
+        echo "Looks like you didn't really need to do that.";
+    }
+}
+?>
+<form method="post" enctype="multipart/form-data">
+    <input type="file" name="file">
+    <button>Submit</button>
+</form>
+```
+
+### A single input that accepts multiple files
+
+`FilesArrayOrganizer` makes dealing with this common scenario a little easier.
+
+```php
+<?php
+use tvanc\FilesArrayOrganizer\FilesArrayOrganizer;
+
+if ($_FILES) {
+    $organizedFiles = FilesArrayOrganizer::organize($_FILES);
+    $attachments    = $organizedFiles['attachments'];
+
+    foreach ($attachments as $attachment) {
+        $attachment_name = $attachment['name'];
+        $attachment_size = $attachment['size'];
+    }
+}
+?>
+<form method="post" enctype="multipart/form-data">
+    <!-- Notice this input accepts multiple files -->
+    <input type="file" name="attachments[]" multiple>
+    <button>Submit</button>
+</form>
+```
+
+### Multiple inputs that accept multiple files
+
+`FilesArrayOrganizer` makes dealing with this less-common scenario _much_ easier. Check the [Explanation](#explanation) to see the surprising `$_FILES` array you can get from a form containing multiple inputs that each accept multiple files.
+
+```php
+<?php
+use tvanc\FilesArrayOrganizer\FilesArrayOrganizer;
+
+// @var Todo[] $todos An array of todos
+$todos = fetchTodos();
+
+if ($_FILES) {
+    $organizedFiles = FilesArrayOrganizer::organize($_FILES);
+
+    foreach ($organizedFiles as $index => $postedTodo) {
+        $attachments = $organizedFiles['todo'][$index];
+
+        saveAttachments($index, $attachments);
+    }
+}
+?>
+<form method="post" enctype="multipart/form-data">
+    <?php foreach ($todos as $index => $todo) { ?>
+        <label>Attachments for todo <?= $index ?></label>
+        <input
+            type="file"
+            name="todo[<?= $index ?>][attachments][]"
+            multiple
+        >
+    <?php } ?>
+
+    <button>Submit</button>
+</form>
+```
+
+### Execute a custom callback on each file
+
+To alter how file data is represented, pass a callback as the second argument to `FilesArrayOrganizer::organize()`. The callback receives one argument, which is an array of file data. The callback's return value will be used to represent the file instead of the received array parameter.
+
+```php
+<?php
+use tvanc\FilesArrayOrganizer\FilesArrayOrganizer;
+use YourOwn\MadeUpNameSpace\UploadedFile;
+
+// Receive $file by reference to mutate it. You can even replace it entirely.
+$callback = function (array & $file) {
+    $file = new UploadedFile($file);
+}
+
+$organizedFilesArray = FilesArrayOrganizer::organize($_FILES, $callback);
+
+// $attachments will be an array of UploadedFile objects
+$attachments = $organizedFilesArray['attachments'];
+?>
+<form method="post" enctype="multipart/form-data">
+    <input type="file" name="attachments[]" multiple>
+    <button>Submit</button>
+</form>
 ```
 
 ## Explanation
@@ -132,106 +241,3 @@ I leave it as an exercise for the reader to figure out how to extract the useful
 
 To see how to use `FilesArrayOrganizer` with a `$_FILES` array just like this, see the example,
 [Multiple inputs that accept multiple files](#multiple-inputs-that-accept-multiple-files).
-
-## Examples
-
-### One input, one file
-
-In a case like this, the `$_FILES` array is pretty straight forward and the organized version is identical to the unorganized version.
-
-```php
-<?php
-use tvanc\FilesArrayOrganizer\FilesArrayOrganizer;
-
-if ($_FILES) {
-    $organizedFiles = FilesArrayOrganizer::organize($_FILES);
-
-    if ($organizedFiles === $_FILES) {
-        echo "Looks like you didn't really need to do that.";
-    }
-}
-?>
-<form method="post" enctype="multipart/form-data">
-    <input type="file" name="file">
-    <button>Submit</button>
-</form>
-```
-
-### A single input that accepts multiple files
-
-```php
-<?php
-use tvanc\FilesArrayOrganizer\FilesArrayOrganizer;
-
-if ($_FILES) {
-    $organizedFiles = FilesArrayOrganizer::organize($_FILES);
-    $attachments    = $organizedFiles['attachments'];
-
-    foreach ($attachments as $attachment) {
-        $attachment_name = $attachment['name'];
-        $attachment_size = $attachment['size'];
-    }
-}
-?>
-<form method="post" enctype="multipart/form-data">
-    <!-- Notice this input accepts multiple files -->
-    <input type="file" name="attachments[]" multiple>
-    <button>Submit</button>
-</form>
-```
-
-### Multiple inputs that accept multiple files
-
-```php
-<?php
-use tvanc\FilesArrayOrganizer\FilesArrayOrganizer;
-
-// @var Todo[] $todos An array of todos
-$todos = fetchTodos();
-
-if ($_FILES) {
-    $organizedFiles = FilesArrayOrganizer::organize($_FILES);
-
-    foreach ($organizedFiles as $index => $postedTodo) {
-        $attachments = $organizedFiles['todo'][$index];
-
-        saveAttachments($index, $attachments);
-    }
-}
-?>
-<form method="post" enctype="multipart/form-data">
-    <?php foreach ($todos as $index => $todo) { ?>
-        <label>Attachments for todo <?= $index ?></label>
-        <input
-            type="file"
-            name="todo[<?= $index ?>][attachments][]"
-            multiple
-        >
-    <?php } ?>
-
-    <button>Submit</button>
-</form>
-```
-
-### Execute a custom callback on each file
-
-```php
-<?php
-use tvanc\FilesArrayOrganizer\FilesArrayOrganizer;
-use YourOwn\MadeUpNameSpace\UploadedFile;
-
-// Receive $file by reference to mutate it. You can even replace it entirely.
-$callback = function (array & $file) {
-    $file = new UploadedFile($file);
-}
-
-$organizedFilesArray = FilesArrayOrganizer::organize($_FILES, $callback);
-
-// $attachments will be an array of UploadedFile objects
-$attachments = $organizedFilesArray['attachments'];
-?>
-<form method="post" enctype="multipart/form-data">
-    <input type="file" name="attachments[]" multiple>
-    <button>Submit</button>
-</form>
-```

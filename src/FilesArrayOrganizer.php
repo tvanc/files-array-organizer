@@ -74,9 +74,11 @@ class FilesArrayOrganizer
      * </pre>
      *
      * @param callable $fileModifierCallback
-     * Optional. A callback that receives the final representation of each file.
-     * Use this callback to modify how individual files are represented in the
-     * final array.
+     * Optional. If no callback is provided each file will be represented by an array with the
+     * following keys:
+     * name, type, tmp_name, error, size
+     * 
+     * If provided, each file array will be passed to callback and the callback's return value will be used instead.
      *
      * @return array
      * The organized files array. Given a value for <code>$filesArray</code>
