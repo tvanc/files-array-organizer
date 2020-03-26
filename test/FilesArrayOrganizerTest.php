@@ -26,9 +26,9 @@ final class FilesArrayOrganizerTest extends TestCase
     public function testCustomCallback()
     {
         $input   = $this->getInputFilesArray();
-        $mutator = function (array &$file) {
+        $mutator = function (array $file) {
             // Do some simple mutation we can verify later
-            $file = [10, $file];
+            return [10, $file];
         };
 
         $defaultOutput      = FilesArrayOrganizer::organize($input);
@@ -85,9 +85,7 @@ final class FilesArrayOrganizerTest extends TestCase
      */
     private function getMutatedCopy(array $file, callable $mutatorCallback)
     {
-        $mutatorCallback($file);
-
-        return $file;
+        return $mutatorCallback($file);
     }
 
 
