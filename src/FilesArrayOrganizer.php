@@ -132,7 +132,9 @@ class FilesArrayOrganizer
         }
 
         if ($fileModifierCallback) {
-            array_walk($flattenedFilesArray, $fileModifierCallback);
+            foreach ($flattenedFilesArray as & $file) {
+                $file = $fileModifierCallback($file)
+            }
         }
 
         return $output;
