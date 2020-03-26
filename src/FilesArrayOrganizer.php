@@ -133,7 +133,7 @@ class FilesArrayOrganizer
 
         if ($fileModifierCallback) {
             foreach ($flattenedFilesArray as & $file) {
-                $file = $fileModifierCallback($file)
+                $file = $fileModifierCallback($file);
             }
         }
 
