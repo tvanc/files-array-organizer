@@ -7,6 +7,7 @@
 
 # Phpunit coverage for humans
 /.coverage/
+/.phpunit.result.cache
 
 # Phpunit coverage for machines
 /clover.xml
